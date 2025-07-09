@@ -1,5 +1,6 @@
 import React from "react";
-import lineChart from "../../assets/line-chart.png"; // adjust if needed
+import lineChart from "../../assets/line-chart.png"; 
+import pieChart from "../../assets/pie-chart.jpg";
 
 const AuthLayout = ({ children }) => {
   return (
@@ -10,9 +11,11 @@ const AuthLayout = ({ children }) => {
         {children}
       </div>
 
+      {/* //TODO: Make the sideimage UI better */}
       {/* Right side with image */}
-      <div className="hidden md:block w-[40vw] h-screen bg-violet-200">
-        <img src={lineChart} alt="Line chart" className="relative top-20 left-10 w-full h-[300px] object-cover rounded-xl" />
+      <div className="hidden md:block w-[40vw] h-screen bg-img">
+        <img src={lineChart} alt="Line chart" className="relative top-20 left-20 w-full rounded-xl" />
+        <img src={pieChart} alt="Line chart" className="relative top-30 w-full rounded-xl" />
       </div>
     </div>
   );

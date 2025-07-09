@@ -4,6 +4,7 @@
 @theme{
     --font-display: "Roboto", "sans-serif";
     --color-primary: #875cf5;
+    --color-img: #dddbff;
 }
 
 @layer base{
