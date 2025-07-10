@@ -2,7 +2,13 @@ import React from 'react'
 
 const Income = () => {
   return (
-    <div>Income</div>
+    <div>
+      TODO:
+      Bar Graph for the Income with add income button
+
+      TODO:
+      Income Sources - Table
+    </div>
   )
 }
 

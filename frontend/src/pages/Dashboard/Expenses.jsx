@@ -2,7 +2,13 @@ import React from 'react'
 
 const Expenses = () => {
   return (
-    <div>Expenses</div>
+    <div>
+      TODO:
+      Line Graph for the Expense with add Expense button
+
+      TODO:
+      Expense Sources - Table
+    </div>
   )
 }
 
