@@ -45,3 +45,44 @@ export const dummyDashboardData = {
     { source: 'Freelance', value: 200 }
   ]
 };
+
+export const dummyIncomeBarGraphData = [
+  { date: 'Jul 3', amount: 300 },
+  { date: 'Jul 4', amount: 500 },
+  { date: 'Jul 5', amount: 150 },
+  { date: 'Jul 6', amount: 400 },
+  { date: 'Jul 7', amount: 200 },
+  { date: 'Jul 8', amount: 350 },
+  { date: 'Jul 9', amount: 250 },
+];
+
+export const dummyIncomeSourcesTableData = [
+  { id: 1, source: 'Salary', amount: 1000, date: '2025-07-05' },
+  { id: 2, source: 'Freelancing', amount: 400, date: '2025-07-04' },
+  { id: 3, source: 'Dividends', amount: 120, date: '2025-07-03' },
+  { id: 4, source: 'Affiliate', amount: 90, date: '2025-07-02' },
+  { id: 5, source: 'Gift', amount: 200, date: '2025-07-01' },
+];
+
+
+// assets/assets.js
+
+export const dummyExpenseBarGraphData = [
+  { date: "2025-07-01", amount: 1200 },
+  { date: "2025-07-02", amount: 900 },
+  { date: "2025-07-03", amount: 1100 },
+  { date: "2025-07-04", amount: 700 },
+  { date: "2025-07-05", amount: 1300 },
+  { date: "2025-07-06", amount: 800 },
+  { date: "2025-07-07", amount: 1000 },
+];
+
+export const dummyExpenseTableData = [
+  { id: 1, name: "Groceries", amount: 1500, date: "2025-07-07" },
+  { id: 2, name: "Rent", amount: 5000, date: "2025-07-05" },
+  { id: 3, name: "Transport", amount: 800, date: "2025-07-04" },
+  { id: 4, name: "Dining Out", amount: 600, date: "2025-07-03" },
+  { id: 5, name: "Internet", amount: 1200, date: "2025-07-02" },
+];
+
+
