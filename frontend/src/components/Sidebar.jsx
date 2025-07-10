@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+
+  const navigate = useNavigate()
+
   const dummyUserData = {
     _id: "6847f7cab3d8daecdb517095",
     name: "Harsh Kaushik",
     email: "admin@example.com",
-    image:
-      "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=300",
+    image: "",
     expenses: [],
     income: [],
   };
@@ -19,7 +21,7 @@ const Sidebar = () => {
   ];
 
   const location = useLocation();
-  const [image, setImage] = useState();
+  const [image, setImage] = useState(null);
 
   const updateImage = () => {
     // TODO: add function to update user image
@@ -30,7 +32,12 @@ const Sidebar = () => {
       {/* User Profile */}
       <div className="flex items-center flex-col">
         <img
-          src={dummyUserData.image}
+          src={
+            image
+              ? URL.createObjectURL(image)
+              : dummyUserData?.image ||
+                "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=300"
+          }
           className="h-9 md:h-14 w-9 md:w-14 rounded-full mx-auto"
           alt="User avatar"
         />
@@ -54,7 +61,7 @@ const Sidebar = () => {
             onClick={updateImage}
             className="absolute top-0 right-0 flex p-2 gap-1 bg-primary/10 text-primary cursor-pointer"
           >
-            Save{" "}
+            Save
           </button>
         )}
         <p className="mt-2 text-sm max-md:hidden">{dummyUserData.name}</p>
@@ -74,6 +81,16 @@ const Sidebar = () => {
             {link.name}
           </NavLink>
         ))}
+        <button
+          onClick={() => {
+            {/*TODO: do this using backend api */}
+            localStorage.removeItem("token");
+            navigate('/')
+          }}
+          className="w-full mt-2 px-4 py-2 text-left text-red-500 hover:bg-red-100"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
