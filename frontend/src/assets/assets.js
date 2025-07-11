@@ -65,8 +65,6 @@ export const dummyIncomeSourcesTableData = [
 ];
 
 
-// assets/assets.js
-
 export const dummyExpenseBarGraphData = [
   { date: "2025-07-01", amount: 1200 },
   { date: "2025-07-02", amount: 900 },
