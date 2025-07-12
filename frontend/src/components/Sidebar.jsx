@@ -1,18 +1,10 @@
 import React, { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { dummyUserData } from "../assets/assets";
 
 const Sidebar = () => {
 
   const navigate = useNavigate()
-
-  const dummyUserData = {
-    _id: "6847f7cab3d8daecdb517095",
-    name: "Harsh Kaushik",
-    email: "admin@example.com",
-    image: "",
-    expenses: [],
-    income: [],
-  };
 
   const menuLinks = [
     { name: "Home", path: "/home" },

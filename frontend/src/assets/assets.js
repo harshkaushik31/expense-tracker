@@ -83,4 +83,11 @@ export const dummyExpenseTableData = [
   { id: 5, name: "Internet", amount: 1200, date: "2025-07-02" },
 ];
 
-
+export const dummyUserData = {
+    _id: "6847f7cab3d8daecdb517095",
+    name: "Harsh Kaushik",
+    email: "admin@example.com",
+    image: "",
+    expenses: [],
+    income: [],
+  };
