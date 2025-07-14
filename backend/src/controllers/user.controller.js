@@ -3,7 +3,7 @@ import { ApiResponse } from "../util/ApiResponse.js";
 import { asyncHandler } from "../util/asyncHandler.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import { User } from "../models/user.models.js";
 
 const generateToken = (userId) => {
     const payload = userId;

@@ -2,6 +2,8 @@ import { ApiError } from "../util/ApiError.js";
 import { ApiResponse } from "../util/ApiResponse.js";
 import { asyncHandler } from "../util/asyncHandler.js";
 
+import Income from "../models/Income.js"; 
+
 const addIncome = asyncHandler(async (req, res) => {
     const { amount, source } = req.body;
 
@@ -21,7 +23,6 @@ const addIncome = asyncHandler(async (req, res) => {
         date: new Date(date)
     };
 
-    // Save the income entry to the database (assuming Income is a Mongoose model)
     const newIncome = await Income.create(incomeEntry);
 
     res.status(201).json(new ApiResponse(201, newIncome, "Income added successfully"));
