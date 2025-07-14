@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import AuthLayout from '../../components/Layout/AuthLayout'
+import { useAppContext } from '../../context/AppContext'
+
 
 const Login = () => {
+
+  const { setToken, axios , setUser} = useAppContext();
 
   const [state,setState] = useState('login')
   const [name, setName] = useState('')
@@ -9,7 +13,36 @@ const Login = () => {
   const [password, setPassword] = useState('')
 
   const onSubmitHandler = async (e) => {
-    e.preventDefault()
+    try {
+      e.preventDefault()
+  
+      const payload = state === 'login' ? { email, password } : { name, email, password };
+  
+      const { data } = await axios.post(`/api/v1/user/${state}`, payload);
+  
+      axios.defaults.headers.common[`Authorization`] = `${data.data.token}`;
+      localStorage.setItem('token', data.data.token);
+      setToken(data.data.token);
+  
+      if(data.success) {
+        navigate('/');
+        setToken(data.data.token);
+        setUser(data.data.user);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        setEmail('');
+        setPassword('');
+        setName('');
+      }else{
+        console.error("Authentication failed:", data.message);
+      }
+    } catch (error) {
+      console.error("Error during authentication:", error);
+      alert("An error occurred during authentication. Please try again.");
+      setEmail('');
+      setPassword('');
+      setName('');
+      
+    }
   }
 
   return (
