@@ -4,6 +4,8 @@ import { asyncHandler } from "../util/asyncHandler.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.models.js";
+import imagekit from "../../configs/imagekit.js";
+import fs from "fs";
 
 const generateToken = (userId) => {
     const payload = { userId };
@@ -125,6 +127,62 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, updatedUser, "User profile updated successfully"));
 });
 
+const updateUserImage = asyncHandler(async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const imageFile = req.file;
+
+        if (!imageFile) {
+            throw new ApiError(400, "No image uploaded");
+        }
+
+        const fileBuffer = fs.readFileSync(imageFile.path); 
+
+        const response = await imagekit.upload({
+            file: fileBuffer,
+            fileName: imageFile.originalname,
+            folder: "/users",
+        });
+
+        fs.unlink(imageFile.path, (err) => {
+  if (err) console.error("Failed to delete temp file:", err);
+});
+
+
+
+        const optimizedImageURL = imagekit.url({
+            path: response.filePath,
+            transformation: [
+                { width: "1280" },
+                { quality: "auto" },
+                { format: "webp" },
+            ],
+        });
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { image: optimizedImageURL },
+            { new: true, runValidators: true }
+        ).select("-password");
+
+        if (!updatedUser) {
+            throw new ApiError(404, "User not found");
+        }
+
+        res.status(200).json(
+            new ApiResponse(200, updatedUser, "User image updated successfully")
+        );
+    } catch (error) {
+    
+        res.status(500).json({
+            success: false,
+            message: "Failed to update user image",
+            error: error.message,
+        });
+    }
+});
+
+
 const getIncome = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
@@ -136,4 +194,4 @@ const getIncome = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, income, "User income retrieved successfully"));
 });
 
-export { healthCheck, getUserProfile, getUserExpenses, updateUserProfile, getIncome, registerUser, loginUser };
+export { healthCheck, getUserProfile, getUserExpenses, updateUserProfile, getIncome, registerUser, loginUser, updateUserImage };

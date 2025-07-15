@@ -1,10 +1,21 @@
 import React, { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { dummyUserData } from "../assets/assets";
+import { useAppContext } from "../context/AppContext";
 
 const Sidebar = () => {
 
   const navigate = useNavigate()
+  const location = useLocation();
+  const [image, setImage] = useState(null);
+  const { user, axios, fetchUser } = useAppContext();
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-gray-500">Please log in to access the sidebar</p>
+      </div>
+    );
+  }
 
   const menuLinks = [
     { name: "Home", path: "/home" },
@@ -12,11 +23,28 @@ const Sidebar = () => {
     { name: "Expenses", path: "/expenses" },
   ];
 
-  const location = useLocation();
-  const [image, setImage] = useState(null);
 
-  const updateImage = () => {
+
+  const updateImage = async() => {
     // TODO: add function to update user image
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      const { data } = await axios.post('/api/v1/user/update-image', formData)
+
+      if (data.success) {
+        fetchUser();
+        setImage(null);
+        alert("Image updated successfully");
+      }else{
+        console.log("Image update failed:", data.message);
+      }
+
+
+    } catch (error) {
+      console.error("Error updating image:", error);
+      alert("Failed to update image. Please try again.");
+    }
   };
 
   return (
@@ -27,7 +55,7 @@ const Sidebar = () => {
           src={
             image
               ? URL.createObjectURL(image)
-              : dummyUserData?.image ||
+              : user?.image ||
                 "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=300"
           }
           className="h-9 md:h-14 w-9 md:w-14 rounded-full mx-auto"
@@ -56,7 +84,7 @@ const Sidebar = () => {
             Save
           </button>
         )}
-        <p className="mt-2 text-sm max-md:hidden">{dummyUserData.name}</p>
+        <p className="mt-2 text-sm max-md:hidden">{user.name}</p>
       </div>
 
       <div className="flex flex-col w-full items-stretch">
