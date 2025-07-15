@@ -6,19 +6,20 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.models.js";
 
 const generateToken = (userId) => {
-    const payload = userId;
+    const payload = { userId };
     return jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: '1d' })
+        expiresIn: '1d'
+    })
 }
 
 
-const healthCheck = asyncHandler( async (req , res) => {
-    res.status(200).json(new ApiResponse(200,"OK"))
-} )
+const healthCheck = asyncHandler(async (req, res) => {
+    res.status(200).json(new ApiResponse(200, "OK"))
+})
 
-const registerUser = asyncHandler( async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
-    
+
     // Validate input
     if (!name || !email || !password) {
         throw new ApiError(400, "All fields are required");
@@ -32,7 +33,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({
+    const newUser = await User.create({
         name,
         email,
         password: hashedPassword
@@ -44,7 +45,7 @@ const registerUser = asyncHandler( async (req, res) => {
     res.status(201).json(new ApiResponse(201, token, "User registered successfully"));
 });
 
-const loginUser = asyncHandler( async (req, res) => {
+const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     // Validate input
@@ -64,11 +65,23 @@ const loginUser = asyncHandler( async (req, res) => {
 
     const token = generateToken(user._id.toString());
 
-    res.status(200).json(new ApiResponse(200, token, "Login successful"));
+    res.status(200).json(new ApiResponse(
+  200,
+  {
+    token,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email
+    }
+  },
+  "Login successful"
+));
+
 });
 
 
-const getUserProfile = asyncHandler( async (req, res) => {
+const getUserProfile = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
     const user = await User.findById(userId).select("-password");
@@ -79,7 +92,7 @@ const getUserProfile = asyncHandler( async (req, res) => {
     res.status(200).json(new ApiResponse(200, user, "User profile retrieved successfully"));
 });
 
-const getUserExpenses = asyncHandler( async (req, res) => {
+const getUserExpenses = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
     const expenses = await Expense.find({ user: userId });
@@ -90,7 +103,7 @@ const getUserExpenses = asyncHandler( async (req, res) => {
     res.status(200).json(new ApiResponse(200, expenses, "User expenses retrieved successfully"));
 });
 
-const updateUserProfile = asyncHandler( async (req, res) => {
+const updateUserProfile = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const { name, email } = req.body;
 
@@ -112,7 +125,7 @@ const updateUserProfile = asyncHandler( async (req, res) => {
     res.status(200).json(new ApiResponse(200, updatedUser, "User profile updated successfully"));
 });
 
-const getIncome = asyncHandler( async (req, res) => {
+const getIncome = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
     const income = await Income.find({ user: userId });
@@ -123,4 +136,4 @@ const getIncome = asyncHandler( async (req, res) => {
     res.status(200).json(new ApiResponse(200, income, "User income retrieved successfully"));
 });
 
-export { healthCheck, getUserProfile, getUserExpenses, updateUserProfile, getIncome , registerUser, loginUser };
+export { healthCheck, getUserProfile, getUserExpenses, updateUserProfile, getIncome, registerUser, loginUser };

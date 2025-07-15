@@ -50,7 +50,8 @@ export const AppProvider = ({ children }) => {
         token,
         setToken,
         user,
-        setUser
+        setUser,
+        axios
     };
 
     return (

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import AuthLayout from '../../components/Layout/AuthLayout'
 import { useAppContext } from '../../context/AppContext'
+import { useNavigate } from 'react-router-dom'
 
 
 const Login = () => {
+
+  const navigate = useNavigate();
 
   const { setToken, axios , setUser} = useAppContext();
 
@@ -19,6 +22,7 @@ const Login = () => {
       const payload = state === 'login' ? { email, password } : { name, email, password };
   
       const { data } = await axios.post(`/api/v1/user/${state}`, payload);
+      console.log("AUTH RESPONSE:", data);
   
       axios.defaults.headers.common[`Authorization`] = `${data.data.token}`;
       localStorage.setItem('token', data.data.token);

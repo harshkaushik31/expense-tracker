@@ -77,6 +77,7 @@ const Sidebar = () => {
           onClick={() => {
             {/*TODO: do this using backend api */}
             localStorage.removeItem("token");
+            localStorage.removeItem("user");
             navigate('/')
           }}
           className="w-full mt-2 px-4 py-2 text-left text-red-500 hover:bg-red-100"
