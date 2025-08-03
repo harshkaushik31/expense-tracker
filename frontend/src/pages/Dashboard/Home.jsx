@@ -73,7 +73,7 @@ const Home = () => {
                         {recentTransactions.length > 0 ? (
                             recentTransactions.map((transaction) => (
                                 <li key={transaction._id} className="flex justify-between items-center text-sm">
-                                    <span>{transaction.category || transaction.source}</span>
+                                    <span>{transaction.source || transaction.category}</span>
                                     <span className={`font-medium ${transaction.type === "income" ? "text-green-600" : "text-red-600"}`}>
                                         {transaction.type === "income" ? "+" : "-"} ₹{transaction.amount.toLocaleString()}
                                     </span>
