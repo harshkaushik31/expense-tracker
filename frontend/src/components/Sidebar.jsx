@@ -7,7 +7,7 @@ const Sidebar = () => {
   const navigate = useNavigate()
   const location = useLocation();
   const [image, setImage] = useState(null);
-  const { user, axios, fetchUser } = useAppContext();
+  const { user, axios, fetchUser, setUser, logout  } = useAppContext();
 
   if (!user) {
     return (

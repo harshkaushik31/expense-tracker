@@ -1,31 +1,42 @@
-import { ApiError } from "../util/ApiError";
-import { ApiResponse } from "../util/ApiResponse.js";
 import { asyncHandler } from "../util/asyncHandler.js";
-
-import Expense from "../models/Expense.js";
+import { ApiError } from "../util/ApiError.js";
+import { ApiResponse } from "../util/ApiResponse.js";
+import { Expense } from "../models/expense.model.js";
+import { User } from "../models/user.models.js"; // Import the User model
 
 const addExpense = asyncHandler(async (req, res) => {
-    const { amount, category, date } = req.body;
-
-    // Validate input
-    if (!amount || !category || !date) {
-        throw new ApiError(400, "All fields are required");
-    }
-
-    // Assuming req.user is set by an authentication middleware
+    const { category, amount } = req.body;
     const userId = req.user._id;
 
-    // Create a new expense entry
-    const expenseEntry = {
-        userId,
-        amount,
+    // --- Validation ---
+    if (!category || !amount) {
+        throw new ApiError(400, "Category and amount are required.");
+    }
+    if (typeof amount !== 'number' || amount <= 0) {
+        throw new ApiError(400, "Amount must be a positive number.");
+    }
+
+    // --- Create the new expense document ---
+    const newExpense = await Expense.create({
         category,
-        date: new Date(date)
-    };
+        amount,
+        user: userId,
+    });
+    
+    if (!newExpense) {
+        throw new ApiError(500, "Failed to create new expense entry in the database.");
+    }
 
-    const newExpense = await Expense.create(expenseEntry);
+    // --- Add the new expense's ID to the user's expense array ---
+    await User.findByIdAndUpdate(userId, {
+        $push: { expense: newExpense._id },
+    });
 
-    res.status(201).json(new ApiResponse(201, newExpense, "Expense added successfully"));
+    // --- Send a success response ---
+    return res.status(201).json(
+        new ApiResponse(201, newExpense, "Expense added successfully.")
+    );
 });
 
+// Export the function
 export { addExpense };

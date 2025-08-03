@@ -8,46 +8,32 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const { setToken, axios , setUser} = useAppContext();
+  const { login, axios , setUser} = useAppContext();
 
   const [state,setState] = useState('login')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const onSubmitHandler = async (e) => {
-    try {
-      e.preventDefault()
-  
-      const payload = state === 'login' ? { email, password } : { name, email, password };
-  
-      const { data } = await axios.post(`/api/v1/user/${state}`, payload);
-      console.log("AUTH RESPONSE:", data);
-  
-      axios.defaults.headers.common[`Authorization`] = `${data.data.token}`;
-      localStorage.setItem('token', data.data.token);
-      setToken(data.data.token);
-  
-      if(data.success) {
-        navigate('/');
-        setToken(data.data.token);
-        setUser(data.data.user);
-        localStorage.setItem('user', JSON.stringify(data.data.user));
-        setEmail('');
-        setPassword('');
-        setName('');
-      }else{
-        console.error("Authentication failed:", data.message);
+   const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    if (state === 'login') {
+      await login(email, password); // Use the context login function
+    } else {
+      // Handle registration
+      try {
+        const { data } = await axios.post(`/api/v1/user/register`, { name, email, password });
+        if (data.success) {
+          // After successful registration, log the user in
+          await login(email, password);
+        } else {
+          console.error("Registration failed:", data.message);
+        }
+      } catch (error) {
+        console.error("Error during registration:", error);
       }
-    } catch (error) {
-      console.error("Error during authentication:", error);
-      alert("An error occurred during authentication. Please try again.");
-      setEmail('');
-      setPassword('');
-      setName('');
-      
     }
-  }
+  };
 
   return (
     <AuthLayout>

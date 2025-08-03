@@ -7,6 +7,9 @@ import { User } from "../models/user.models.js";
 import imagekit from "../../configs/imagekit.js";
 import fs from "fs";
 
+import { Income } from "../models/income.model.js";
+import { Expense } from "../models/expense.model.js";
+
 const generateToken = (userId) => {
     const payload = { userId };
     return jwt.sign(payload, process.env.JWT_SECRET, {
@@ -84,15 +87,37 @@ const loginUser = asyncHandler(async (req, res) => {
 
 
 const getUserProfile = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
+    // 👇 STEP 2: WRAP THE LOGIC IN A TRY...CATCH BLOCK FOR DETAILED LOGGING
+    try {
+        // Log the user ID to make sure middleware is working
+        console.log("Fetching profile for user ID:", req.user?._id);
 
-    const user = await User.findById(userId).select("-password");
-    if (!user) {
-        throw new ApiError(404, "User not found");
+        if (!req.user?._id) {
+            throw new ApiError(401, "User not authenticated");
+        }
+
+        const userId = req.user._id;
+
+        const user = await User.findById(userId)
+            .select("-password")
+            .populate("income")
+            .populate("expense");
+
+        if (!user) {
+            throw new ApiError(404, "User not found in database");
+        }
+
+        return res.status(200).json(new ApiResponse(200, user, "User profile retrieved successfully"));
+
+    } catch (error) {
+        // Log the detailed error to your backend terminal
+        console.error("🔴 ERROR IN getUserProfile:", error);
+
+        // Throw a generic error to the frontend
+        throw new ApiError(500, "Error fetching user profile.", error.message);
     }
-
-    res.status(200).json(new ApiResponse(200, user, "User profile retrieved successfully"));
 });
+
 
 const getUserExpenses = asyncHandler(async (req, res) => {
     const userId = req.user._id;
